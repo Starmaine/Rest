@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -18,6 +19,9 @@ import ru.kata.spring.boot_security.demo.security.UserDetailServiceImpl;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    @Autowired
+    public WebSecurityConfig(UserDetailsService userDetailsService) {
+    }
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailServiceImpl();
