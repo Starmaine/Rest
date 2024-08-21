@@ -1,17 +1,18 @@
 package ru.kata.spring.boot_security.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
-@Data
+import java.util.Set;
+
+
 @Entity
 @NoArgsConstructor
+@Getter
+@Setter
 @Table(name= "role")
 public class Role implements GrantedAuthority {
 
@@ -19,7 +20,11 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String name;
+
+    @ManyToMany(mappedBy = "roles")
+    Set<User> users;
 
     @Override
     public String getAuthority() {

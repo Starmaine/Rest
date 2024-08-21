@@ -23,12 +23,10 @@ import java.util.stream.Collectors;
 public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
 
-    public AdminController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping()
@@ -42,7 +40,6 @@ public class AdminController {
 
     @PostMapping()
     public String addUser(@ModelAttribute("user") User user, @RequestParam(value = "roleIds", required = false) Set<Long> roleIds) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(roleIds.stream().map(roleService::findById).collect(Collectors.toSet()));
         userService.save(user);
         return "redirect:/admin";
@@ -63,13 +60,7 @@ public class AdminController {
 
     @PostMapping("/update")
     public String updateUser(@ModelAttribute("user") User newUserDetails, @RequestParam(value = "roleIds", required = false) Set<Long> roleIds) {
-        User user = userService.findById(newUserDetails.getId());
-        user.setRoles(roleIds.stream().map(roleService::findById).collect(Collectors.toSet()));
-        user.setUsername(newUserDetails.getUsername());
-        user.setPassword(passwordEncoder.encode(newUserDetails.getPassword()));
-        user.setEmail(newUserDetails.getEmail());
-        user.setPhone(newUserDetails.getPhone());
-        userService.update(user);
+        userService.update(newUserDetails, roleIds);
         return "redirect:/admin";
     }
 }

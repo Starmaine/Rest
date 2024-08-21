@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.service;
 import ru.kata.spring.boot_security.demo.entity.User;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
     List<User> getAllUsers();
@@ -13,7 +14,7 @@ public interface UserService {
 
     void saveAll(List<User> users);
 
-    void update(User updatedUser);
+    void update(User updatedUser, Set<Long> roleIds);
 
     void delete(Long id);
 

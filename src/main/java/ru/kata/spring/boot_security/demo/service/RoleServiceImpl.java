@@ -26,6 +26,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
     public Role save(Role role) {
         return roleRepository.save(role);
     }
@@ -40,6 +41,8 @@ public class RoleServiceImpl implements RoleService {
     public Role findById(Long id) throws RoleNotFoundException {
         return roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException("Role with id "+ id +" not found"));
     }
+    @Override
+    @Transactional
     public void delete(Long id) {
         roleRepository.deleteById(id);
     }
