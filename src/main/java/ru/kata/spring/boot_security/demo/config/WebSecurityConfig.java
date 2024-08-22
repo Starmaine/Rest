@@ -12,25 +12,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import ru.kata.spring.boot_security.demo.security.UserDetailServiceImpl;
 
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    private UserDetailsService userDetailsService;
+
     @Autowired
     public WebSecurityConfig(UserDetailsService userDetailsService) {
-    }
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailServiceImpl();
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
@@ -43,14 +41,13 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable/*csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()/*/)
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/index").permitAll()
-                        .requestMatchers("user/**").authenticated()
+                        .requestMatchers("/user/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN"))
                 .formLogin(form -> form.successHandler(new SuccessUserHandler())
                         .permitAll())
                 .build();
     }
-
 }
