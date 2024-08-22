@@ -23,8 +23,8 @@ public class Role implements GrantedAuthority {
     @Column(unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    Set<User> users;
+//    @ManyToMany(mappedBy = "roles")
+//    Set<User> users;
 
     @Override
     public String getAuthority() {
