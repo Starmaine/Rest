@@ -37,6 +37,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void addUser(User user, Set<Long> roleIds) {
+        if(roleIds != null) {
+            user.setRoles(roleIds.stream()
+                    .map(roleService::findById)
+                    .collect(Collectors.toSet()));
+        }
+        userRepository.save(user);
+    }
+
+    @Override
     public User findById(Long id) throws UserNotFoundException {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("couldn't find user with id " + id));
     }
