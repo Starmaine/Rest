@@ -1,7 +1,5 @@
 package ru.kata.spring.boot_security.demo.service;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -80,6 +78,7 @@ public class UserServiceImpl implements UserService {
         if(updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
             updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
+        System.out.println("Апдейт юзера");
         userRepository.save(updatedUser);
     }
 

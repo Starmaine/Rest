@@ -22,7 +22,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/userPage")
+    @GetMapping
     public String userPage(Model model, Principal principal) {
         String username = principal.getName();
 

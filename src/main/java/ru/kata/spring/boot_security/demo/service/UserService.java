@@ -8,7 +8,7 @@ import java.util.Set;
 public interface UserService {
     List<User> getAllUsers();
 
-    public void addUser(User user, Set<Long> roleIds);
+    void addUser(User user, Set<Long> roleIds);
 
     User findById(Long id);
 

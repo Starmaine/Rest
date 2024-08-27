@@ -45,9 +45,12 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/index").permitAll()
                         .requestMatchers("/user/**").authenticated()
-                        .requestMatchers("/admin/**").hasRole("ADMIN"))
-                .formLogin(form -> form.successHandler(new SuccessUserHandler())
-                        .permitAll())
+                        .requestMatchers("/admin/**").hasRole("ADMIN").anyRequest().permitAll())
+                .formLogin(form -> form.loginPage("/login").successHandler(new SuccessUserHandler())
+                        .permitAll()
+                )
+                .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/index").permitAll()
+                ).userDetailsService(userDetailsService)
                 .build();
     }
 }
