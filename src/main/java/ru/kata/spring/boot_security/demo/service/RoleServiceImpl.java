@@ -7,6 +7,7 @@ import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.exception.RoleNotFoundException;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -43,4 +44,5 @@ public class RoleServiceImpl implements RoleService {
     public void delete(Long id) {
         roleRepository.deleteById(id);
     }
+
 }

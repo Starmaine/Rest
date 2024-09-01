@@ -5,6 +5,7 @@ import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.exception.RoleNotFoundException;
 
 import java.util.List;
+import java.util.Set;
 
 public interface RoleService {
 
@@ -17,4 +18,5 @@ public interface RoleService {
     Role findById(Long id);
 
     void delete(Long id);
+
 }

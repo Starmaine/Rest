@@ -1,67 +1,63 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import ru.kata.spring.boot_security.demo.service.RoleService;
-import ru.kata.spring.boot_security.demo.service.UserService;
+import org.springframework.web.bind.annotation.RestController;
+import ru.kata.spring.boot_security.demo.converter.UserConverter;
+import ru.kata.spring.boot_security.demo.dto.UserDTO;
 import ru.kata.spring.boot_security.demo.entity.User;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 
-@Controller
-@PreAuthorize("hasRole('ADMIN')")
-@RequestMapping("/admin")
+@RestController
+//@PreAuthorize("hasRole('ADMIN')")
+@RequestMapping("/api/v1/users")
 public class AdminController {
     private final UserService userService;
-    private final RoleService roleService;
+    private final UserConverter userConverter;
 
-    public AdminController(UserService userService, RoleService roleService) {
+    public AdminController(UserService userService, UserConverter userConverter) {
         this.userService = userService;
-        this.roleService = roleService;
+        this.userConverter = userConverter;
     }
 
-    @GetMapping()
-    public String getAllUsersPage(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("newUser", new User());
-        model.addAttribute("roles", roleService.findAll());
-        return "admin/usersPage";
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Long id) {
+        return userService.findById(id);
     }
 
-
-    @PostMapping()
-    public String addUser(@ModelAttribute("user") User user, @RequestParam(value = "roleIds", required = false) Set<Long> roleIds) {
-//        user.setRoles(roleIds.stream().map(roleService::findById).collect(Collectors.toSet()));
-//        userService.save(user);
-        userService.addUser(user, roleIds);
-        return "redirect:/admin";
+    @GetMapping
+    public Set<UserDTO> getAllUsers() {
+        return userService.getAllUsers().stream().map(userConverter::convertToDTO).collect(Collectors.toSet());
     }
 
-    @PostMapping("/delete")
-    public String deleteUser(@RequestParam("id") Long id) {
+    @PostMapping
+    public UserDTO addUser(@RequestBody UserDTO userDTO) {
+        User user = userConverter.convertToEntity(userDTO);
+        userService.save(user);
+        return userConverter.convertToDTO(userService.findById(user.getId()));
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteUser(@PathVariable Long id) {
         userService.delete(id);
-        return "redirect:/admin";
+        return "User by id " + id + " deleted";
     }
 
-    @GetMapping("/update")
-    public String getUpdatePage(@RequestParam("id") Long id, Model model) {
-        model.addAttribute("user", userService.findById(id));
-        model.addAttribute("roles", roleService.findAll());
-        return "admin/update";
+    @PutMapping
+    public UserDTO updateUser(@RequestBody UserDTO userDTO) {
+        User user = userConverter.convertToEntity(userDTO);
+        userService.update(user);
+        return userConverter.convertToDTO(user);
     }
 
-    @PostMapping("/update")
-    public String updateUser(@ModelAttribute("user") User newUserDetails, @RequestParam(value = "roleIds", required = false) Set<Long> roleIds) {
-        userService.update(newUserDetails, roleIds);
-        return "redirect:/admin";
-    }
 }
 
