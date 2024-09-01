@@ -1,8 +1,5 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,22 +13,19 @@ import java.security.Principal;
 
 
 @RestController
-//@PreAuthorize("hasRole('ROLE_USER')")
-@RequestMapping("/user")
+@RequestMapping("api/v1/user")
 public class UserController {
 
 
     private final UserService userService;
-    //    private final UserErrorResponse userErrorResponse; //todo
     private final UserConverter userConverter;
 
-    public UserController(UserService userService /*UserErrorResponse userErrorResponse*/, UserConverter userConverter) {
+    public UserController(UserService userService, UserConverter userConverter) {
         this.userService = userService;
-//        this.userErrorResponse = userErrorResponse;
         this.userConverter = userConverter;
     }
 
-    @GetMapping("api/v1/user")
+    @GetMapping()
     public UserDTO userPage(Model model, Principal principal) {
         String username = principal.getName();
         User user = userService.findByUsername(username);
